@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Registration {
+  id              String       @id @default(cuid())
+  registrationId  String       @unique @map("registration_id")
+  teamName        String       @map("team_name")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  
+  students        Student[]
+  
+  @@map("registrations")
+}
+
+model Student {
+  id              String       @id @default(cuid())
+  registrationId  String       @map("registration_id")
+  registration    Registration @relation(fields: [registrationId], references: [registrationId], onDelete: Cascade)
+  
+  fullName        String       @map("full_name")
+  usn             String
+  phone           String
+  email           String
+  semester        Int
+  year            Int
+  department      String
+  gender          String
+  isTeamLeader    Boolean      @default(false) @map("is_team_leader")
+  orderIndex      Int          @default(0) @map("order_index")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  
+  @@unique([registrationId, usn])
+  @@unique([registrationId, phone])
+  @@unique([registrationId, email])
+  @@index([registrationId])
+  @@index([usn])
+  @@index([phone])
+  @@index([email])
+  @@map("students")
+}

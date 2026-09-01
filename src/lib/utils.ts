@@ -4,6 +4,12 @@ export function generateRegistrationId(): string {
   return `SIH-${timestamp}${random}`
 }
 
+export async function generateSequentialRegistrationId(prisma: any): Promise<string> {
+  const count = await prisma.registration.count()
+  const nextNumber = count + 1
+  return `SIH-${String(nextNumber).padStart(4, '0')}`
+}
+
 export function formatDate(date: Date | string): string {
   const d = new Date(date)
   return d.toLocaleDateString("en-IN", {

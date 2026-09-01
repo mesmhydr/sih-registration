@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { registrationSchema } from "@/lib/validations"
-import { generateRegistrationId, normalizeTeamName } from "@/lib/utils"
+import { generateSequentialRegistrationId, normalizeTeamName } from "@/lib/utils"
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const registrationId = generateRegistrationId()
+    const registrationId = await generateSequentialRegistrationId(prisma)
 
     const registration = await prisma.registration.create({
       data: {

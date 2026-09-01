@@ -178,7 +178,7 @@ export function RegistrationForm() {
       setBottomError("Please confirm the declaration to proceed.")
       setErrorAnchor("confirm")
       setTimeout(() => {
-        const el = document.getElementById("confirm-checkbox")
+        const el = document.getElementById("review-anchor")
         if (el) {
           el.scrollIntoView({ behavior: "smooth", block: "center" })
         }
@@ -381,7 +381,7 @@ export function RegistrationForm() {
 
       {/* Review Section */}
       {showReview && (
-        <section aria-labelledby="review-section" className="mb-8" id="confirm-checkbox">
+        <section aria-labelledby="review-section" className="mb-8" id="review-anchor">
           <header className="mb-5">
             <h2 id="review-section" className="font-display text-display-md text-paper-text mb-2">
               REVIEW & CONFIRM

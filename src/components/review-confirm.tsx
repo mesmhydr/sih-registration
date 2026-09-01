@@ -55,10 +55,10 @@ export function ReviewConfirm({ teamName, students, confirmed, onConfirmChange, 
         </div>
         <div className={`p-4 text-center ${femaleCount > 0 ? "bg-green border-green border-brutal" : "bg-paper-surface border-orange border-brutal"}`}>
           <p className={`text-label mb-1 ${femaleCount > 0 ? "text-paper-surface" : "text-paper-muted"}`}>FEMALE REQUIREMENT</p>
-          <p className={`font-display text-heading-lg ${femaleCount > 0 ? "text-green" : "text-orange"}`}>
+          <p className={`font-display text-heading-lg ${femaleCount > 0 ? "text-paper-surface" : "text-orange"}`}>
             {femaleCount} / 6
           </p>
-          <p className={`text-caption mt-1 ${femaleCount > 0 ? "text-green" : "text-orange"}`}>
+          <p className={`text-caption mt-1 ${femaleCount > 0 ? "text-paper-surface" : "text-orange"}`}>
             {femaleCount > 0 ? "REQUIREMENT MET" : "REQUIREMENT NOT MET"}
           </p>
         </div>

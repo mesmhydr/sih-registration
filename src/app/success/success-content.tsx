@@ -149,10 +149,10 @@ export function SuccessContent() {
             <div className="inline-flex items-center justify-center w-24 h-24 mb-5 bg-green text-white font-display text-display-md font-bold shadow-brutal-lg">
               ✓
             </div>
-            <h2 className="font-display text-display-lg text-white mb-2">
+            <h2 className="font-display text-display-lg text-green mb-2">
               REGISTRATION SUCCESSFUL
             </h2>
-            <p className="text-body-lg text-white/90 max-w-xl mx-auto">
+            <p className="text-body-lg text-paper-text max-w-xl mx-auto">
               Your team has been registered for the Smart India Internal Hackathon 2026.
             </p>
           </div>

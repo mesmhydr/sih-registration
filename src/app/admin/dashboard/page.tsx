@@ -220,9 +220,9 @@ export default function AdminDashboardPage() {
               <p className="font-display text-display-lg text-paper-text">{stats.totalStudents}</p>
             </div>
             <div className="brutal-surface-green p-4 sm:p-5 text-center">
-              <p className="text-label text-white/80 mb-1">VALID</p>
-              <p className="font-display text-display-lg text-white">{stats.validTeams}</p>
-              <p className="text-caption text-white/70 mt-1">with female member</p>
+              <p className="text-label text-paper-muted mb-1">VALID</p>
+              <p className="font-display text-display-lg text-green">{stats.validTeams}</p>
+              <p className="text-caption text-paper-muted mt-1">with female member</p>
             </div>
             <div className={`brutal-surface ${stats.invalidTeams > 0 ? "border-orange border-brutal-thick shadow-brutal-orange" : ""} p-4 sm:p-5 text-center`}>
               <p className="text-label text-paper-muted mb-1">INVALID</p>

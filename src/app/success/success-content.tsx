@@ -99,156 +99,213 @@ export function SuccessContent() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div
-            className="inline-block w-12 h-12 border-[4px] border-brutal-text border-t-transparent animate-spin mb-4"
-            aria-hidden="true"
-          />
-          <p className="text-heading-md">Loading registration...</p>
+      <main className="min-h-screen flex items-center justify-center bg-paper-bg bg-paper-texture">
+        <div className="text-center brutal-container">
+          <div className="w-16 h-16 mx-auto mb-5 border-3 border-paper-text border-t-transparent rounded-none animate-spin" aria-hidden="true" />
+          <p className="font-display text-heading-lg text-paper-text">Loading registration…</p>
         </div>
       </main>
     )
   }
 
   const teamLeader = data?.students.find((s) => s.isTeamLeader) || data?.students[0]
+  const femaleCount = data?.students.filter((s) => s.gender === "FEMALE").length || 0
 
   return (
-    <main className="min-h-screen pb-12 print:pb-0">
-      <header className="border-b-[4px] border-brutal-text print:border-b-[2px]">
-        <div className="brutal-container py-6 print:py-4">
-          <p className="text-label uppercase tracking-wider mb-1">Registration Confirmation</p>
-          <h1 className="text-display-lg">SMART INDIA</h1>
-          <h1 className="text-display-lg">INTERNAL HACKATHON</h1>
+    <main className="min-h-screen pb-12 print:pb-0 bg-paper-bg bg-paper-texture">
+      {/* Decorative Elements */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        <div className="brutal-corner brutal-corner-tl top-4 left-4" />
+        <div className="brutal-corner brutal-corner-tr top-4 right-4" />
+        <div className="brutal-corner brutal-corner-bl bottom-4 left-4" />
+        <div className="brutal-corner brutal-corner-br bottom-4 right-4" />
+      </div>
+
+      {/* Header */}
+      <header className="border-b border-paper-border border-[3px] relative">
+        <div className="brutal-container py-6 sm:py-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-label text-paper-muted mb-1">REGISTRATION CONFIRMED</p>
+              <h1 className="font-display text-display-lg text-paper-text leading-tight">
+                SMART INDIA INTERNAL HACKATHON 2026
+              </h1>
+            </div>
+            <div className="flex flex-col items-end gap-1 sm:hidden">
+              <p className="text-label text-paper-muted">REGISTRATION ID</p>
+              <code className="font-mono font-display text-heading-md text-orange break-all">
+                {data?.registrationId}
+              </code>
+            </div>
+          </div>
         </div>
       </header>
 
-      <div className="brutal-container py-8 sm:py-12">
-        <div className="brutal-card p-8 sm:p-12 text-center mb-8" style={{ borderColor: "#15803D", boxShadow: "8px 8px 0px #15803D" }}>
-          <div
-            className="inline-block w-20 h-20 border-[4px] mb-6"
-            style={{ borderColor: "#15803D", background: "#15803D" }}
-            aria-hidden="true"
-          >
-            <div className="flex items-center justify-center h-full text-white text-display-md font-bold">✓</div>
-          </div>
-          <h2 className="text-display-lg mb-4" style={{ color: "#15803D" }}>
-            REGISTRATION SUCCESSFUL
-          </h2>
-          <p className="text-body-lg text-brutal-text/80 mb-2">
-            Your team has been registered for the
-          </p>
-          <p className="text-heading-md font-bold">
-            SMART INDIA INTERNAL HACKATHON.
-          </p>
-        </div>
-
-        <div className="brutal-card p-6 sm:p-8 mb-8">
-          <p className="text-label uppercase tracking-wider mb-2">Registration ID</p>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <code className="font-mono text-display-md font-bold break-all" style={{ color: "#6B21A8" }}>
-              {data?.registrationId}
-            </code>
-            <button
-              onClick={handleCopy}
-              className="brutal-button-secondary !py-3 !px-5 !w-auto !text-body"
-              aria-label="Copy registration ID"
-            >
-              {copied ? "✓ COPIED" : "COPY ID"}
-            </button>
+      <div className="brutal-container py-6 sm:py-8">
+        {/* Success Panel */}
+        <div className="brutal-surface-green text-center mb-8 relative overflow-hidden">
+          <div className="absolute top-4 right-4 brutal-diamond-green" style={{ opacity: 0.2 }} aria-hidden="true" />
+          <div className="relative z-10">
+            <div className="inline-flex items-center justify-center w-24 h-24 mb-5 bg-green text-white font-display text-display-md font-bold shadow-brutal-lg">
+              ✓
+            </div>
+            <h2 className="font-display text-display-lg text-white mb-2">
+              REGISTRATION SUCCESSFUL
+            </h2>
+            <p className="text-body-lg text-white/90 max-w-xl mx-auto">
+              Your team has been registered for the Smart India Internal Hackathon 2026.
+            </p>
           </div>
         </div>
 
-        <div className="brutal-card p-6 sm:p-8 mb-8">
-          <h3 className="brutal-section-title">REGISTRATION DETAILS</h3>
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <dt className="text-label uppercase tracking-wider mb-1">Team Name</dt>
-              <dd className="text-heading-md font-bold">{data?.teamName}</dd>
+        {/* Registration ID */}
+        <div className="brutal-panel mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <p className="text-label text-paper-muted">REGISTRATION ID</p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <code className="font-display font-mono text-heading-lg text-orange break-all whitespace-nowrap">
+                {data?.registrationId}
+              </code>
+              <button
+                onClick={handleCopy}
+                className="brutal-btn-secondary brutal-btn-sm"
+                aria-label="Copy registration ID"
+              >
+                {copied ? "✓ COPIED" : "COPY ID"}
+              </button>
             </div>
-            <div>
-              <dt className="text-label uppercase tracking-wider mb-1">Team Leader</dt>
-              <dd className="text-heading-md font-bold">{teamLeader?.fullName || "—"}</dd>
-            </div>
-            <div>
-              <dt className="text-label uppercase tracking-wider mb-1">Number of Members</dt>
-              <dd className="text-heading-md font-bold">6</dd>
-            </div>
-            <div>
-              <dt className="text-label uppercase tracking-wider mb-1">Hackathon Date</dt>
-              <dd className="text-heading-md font-bold">3 September 2026</dd>
-            </div>
-            <div>
-              <dt className="text-label uppercase tracking-wider mb-1">Registered On</dt>
-              <dd className="text-heading-md font-bold">
-                {data?.createdAt ? new Date(data.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "—"}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-label uppercase tracking-wider mb-1">Female Members</dt>
-              <dd className="text-heading-md font-bold" style={{ color: "#6B21A8" }}>
-                {data?.students.filter((s) => s.gender === "FEMALE").length || 0} student(s)
-              </dd>
-            </div>
-          </dl>
+          </div>
+          <div className="brutal-divider-orange" aria-hidden="true" />
         </div>
 
-        <div className="brutal-card p-6 sm:p-8 mb-8 print:hidden">
-          <h3 className="brutal-section-title">TEAM MEMBERS</h3>
-          <ol className="space-y-3">
+        {/* Details Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+          <div className="brutal-panel p-4 text-center">
+            <p className="text-label text-paper-muted mb-1">TEAM NAME</p>
+            <p className="font-display text-heading-md text-paper-text truncate">
+              {data?.teamName}
+            </p>
+          </div>
+          <div className="brutal-panel p-4 text-center">
+            <p className="text-label text-paper-muted mb-1">TEAM LEADER</p>
+            <p className="font-display text-heading-md text-paper-text truncate">
+              {teamLeader?.fullName || "—"}
+            </p>
+          </div>
+          <div className="brutal-panel p-4 text-center">
+            <p className="text-label text-paper-muted mb-1">MEMBERS</p>
+            <p className="font-display text-heading-md text-paper-text">6</p>
+          </div>
+          <div className={`brutal-panel p-4 text-center ${femaleCount > 0 ? "border-green border-brutal" : "border-orange border-brutal"}`}>
+            <p className="text-label text-paper-muted mb-1">FEMALE MEMBERS</p>
+            <p className={`font-display text-heading-md ${femaleCount > 0 ? "text-green" : "text-orange"}`}>
+              {femaleCount} / 6
+            </p>
+          </div>
+        </div>
+
+        {/* Additional Details */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+          <div className="brutal-panel p-4 text-center">
+            <p className="text-label text-paper-muted mb-1">HACKATHON DATE</p>
+            <p className="font-mono text-body text-paper-text">03 SEP 2026</p>
+          </div>
+          <div className="brutal-panel p-4 text-center">
+            <p className="text-label text-paper-muted mb-1">REGISTERED ON</p>
+            <p className="font-mono text-body text-paper-text">
+              {data?.createdAt ? new Date(data.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "—"}
+            </p>
+          </div>
+          <div className="brutal-panel p-4 text-center">
+            <p className="text-label text-paper-muted mb-1">DEADLINE</p>
+            <p className="font-mono text-body text-paper-text">03 SEP 2026</p>
+          </div>
+          <div className="brutal-panel p-4 text-center">
+            <p className="text-label text-paper-muted mb-1">FEE</p>
+            <p className="font-display text-heading-md text-green">FREE</p>
+          </div>
+        </div>
+
+        {/* Team Members */}
+        <div className="brutal-panel mb-8">
+          <header className="mb-5">
+            <h3 className="font-display text-heading-lg text-paper-text mb-1">TEAM MEMBERS</h3>
+            <div className="brutal-accent-line-orange w-24" aria-hidden="true" />
+          </header>
+          <ol className="space-y-2" role="list" aria-label="Team members">
             {data?.students.map((s, idx) => (
-              <li key={idx} className="flex flex-wrap items-center justify-between gap-3 p-4 border-[2px] border-brutal-text">
-                <div className="flex items-center gap-3">
-                  <span className="text-heading-md font-bold w-8">
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <p className="text-body-lg font-bold">{s.fullName}</p>
-                    <p className="text-caption text-brutal-text/60 font-mono">{s.usn}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  {s.isTeamLeader && (
-                    <span className="brutal-badge" style={{ background: "#6B21A8", color: "white", borderColor: "#6B21A8" }}>
-                      LEADER
+              <li key={idx} className="brutal-surface p-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center font-display text-heading-sm text-paper-text bg-paper-surface border-paper-border border-brutal">
+                      {String(idx + 1).padStart(2, "0")}
                     </span>
-                  )}
-                  {s.gender === "FEMALE" && (
-                    <span className="brutal-badge-female">FEMALE</span>
-                  )}
+                    <div className="min-w-0">
+                      <p className="font-bold text-body text-paper-text truncate">
+                        {s.fullName}
+                      </p>
+                      <p className="text-mono-sm text-paper-muted truncate">
+                        {s.usn} · {s.gender === "FEMALE" ? "F" : "M"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {s.isTeamLeader && (
+                      <span className="brutal-badge-yellow">LEADER</span>
+                    )}
+                    {s.gender === "FEMALE" && (
+                      <span className="brutal-badge-orange">F</span>
+                    )}
+                    {s.gender === "MALE" && (
+                      <span className="brutal-badge-black">M</span>
+                    )}
+                  </div>
                 </div>
               </li>
             ))}
           </ol>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:hidden">
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-8">
           <button
             onClick={handlePrint}
-            className="brutal-button-primary"
+            className="brutal-btn-primary brutal-btn-full sm:w-auto brutal-btn-lg"
           >
-            DOWNLOAD / PRINT REGISTRATION
+            DOWNLOAD / PRINT
           </button>
-          <Link href="/" className="brutal-button-secondary text-center">
+          <Link href="/" className="brutal-btn-secondary brutal-btn-full sm:w-auto brutal-btn-lg text-center">
             REGISTER ANOTHER TEAM
           </Link>
         </div>
 
-        <div className="brutal-card p-6 mt-8 text-center print:hidden">
-          <p className="text-body">
-            Please save your Registration ID for future reference.{" "}
-            <Link href="/admin" className="font-bold underline">
+        {/* Footer Note */}
+        <div className="brutal-panel text-center">
+          <p className="text-body text-paper-muted">
+            Save your Registration ID for future reference.
+            <span className="mx-2 text-paper-border" aria-hidden="true">|</span>
+            <Link href="/admin" className="text-orange underline hover:text-orange-200 font-mono">
               View Admin Panel
             </Link>
           </p>
         </div>
 
-        <div className="hidden print:block mt-8 text-center">
-          <p className="text-caption text-brutal-text/60">
-            This is a computer-generated document. No signature is required.
+        {/* Print Only */}
+        <div className="hidden print:block mt-8 text-center brutal-divider">
+          <p className="text-caption text-paper-muted">
+            This is a computer-generated document. No signature required.
           </p>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-paper-border border-[2px] bg-paper-surface/50 mt-auto">
+        <div className="brutal-container py-4">
+          <p className="text-caption text-paper-muted text-center">
+            Smart India Internal Hackathon 2026 · Vemana Institute of Technology
+          </p>
+        </div>
+      </footer>
     </main>
   )
 }

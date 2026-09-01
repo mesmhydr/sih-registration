@@ -21,112 +21,138 @@ export function ReviewConfirm({ teamName, students, confirmed, onConfirmChange, 
   const femaleCount = students.filter((s) => s.gender === "FEMALE").length
 
   return (
-    <div className="brutal-review-card">
-      <h3 className="brutal-section-title">REVIEW &amp; CONFIRM</h3>
+    <div className="brutal-panel">
+      <header className="mb-6">
+        <h3 className="font-display text-display-md text-paper-text mb-2">
+          REVIEW & CONFIRM
+        </h3>
+        <div className="brutal-accent-line-orange" aria-hidden="true" />
+      </header>
 
-      <div className="mb-6">
-        <p className="text-label uppercase tracking-wider mb-2">Team Name</p>
-        <p className="text-heading-md font-bold">
-          {teamName.trim() || <span className="text-brutal-text/40">— not entered —</span>}
+      {/* Team Name */}
+      <div className="mb-6 p-4 bg-paper-surface border-paper-border border-brutal">
+        <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+          <p className="text-label text-paper-muted">TEAM NAME</p>
+          {teamNameTaken && (
+            <span className="brutal-badge-orange">TAKEN</span>
+          )}
+          {!teamNameTaken && teamName.trim() && (
+            <span className="brutal-badge-green">AVAILABLE</span>
+          )}
+        </div>
+        <p className="font-display text-heading-lg text-paper-text">
+          {teamName.trim() || <span className="text-paper-muted font-body">— not entered —</span>}
         </p>
       </div>
 
-      <div className="brutal-review-list">
-        {students.map((s, idx) => {
-          const filled =
-            s.fullName.trim().length >= 2 &&
-            s.usn.trim().length >= 5 &&
-            s.phone.trim().length === 10 &&
-            s.email.includes("@")
-          return (
-            <div key={idx} className="brutal-review-row">
-              <div className="flex items-center gap-3 min-w-0 flex-1">
-                <span className="text-heading-md font-bold">
-                  {String(idx + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-body font-bold truncate">
-                    {s.fullName.trim() || <span className="text-brutal-text/40">— not entered —</span>}
-                    {s.isTeamLeader && (
-                      <span
-                        className="ml-2 brutal-badge"
-                        style={{ background: "#6B21A8", color: "white", borderColor: "#6B21A8" }}
-                      >
-                        LEADER
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-caption text-brutal-text/60 truncate">
-                    {s.usn || "—"} · {s.department} · Sem {s.semester}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                {s.gender === "FEMALE" && (
-                  <span className="brutal-badge-female">F</span>
-                )}
-                {s.gender === "MALE" && (
-                  <span className="brutal-badge-male">M</span>
-                )}
-                <span
-                  className={`brutal-badge ${
-                    filled
-                      ? "bg-brutal-success text-white border-brutal-success"
-                      : "bg-brutal-text/10 text-brutal-text/60 border-brutal-text/40"
-                  }`}
-                >
-                  {filled ? "✓ DONE" : "○ PENDING"}
-                </span>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="mt-6 grid grid-cols-3 gap-3">
-        <div className="border-brutal border-[2px] p-3 text-center">
-          <p className="text-caption uppercase tracking-wider">Filled</p>
-          <p className="text-heading-md font-bold">
+      {/* Team Status */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+        <div className="p-4 bg-paper-surface border-paper-border border-brutal text-center">
+          <p className="text-label text-paper-muted mb-1">MEMBERS</p>
+          <p className="font-display text-display-md text-paper-text">
             {filledCount} / 6
           </p>
         </div>
-        <div
-          className="border-brutal border-[2px] p-3 text-center"
-          style={{
-            borderColor: femaleCount > 0 ? "#15803D" : "#B91C1C",
-            color: femaleCount > 0 ? "#15803D" : "#B91C1C",
-          }}
-        >
-          <p className="text-caption uppercase tracking-wider">Female</p>
-          <p className="text-heading-md font-bold">
+        <div className={`p-4 text-center ${femaleCount > 0 ? "bg-green border-green border-brutal" : "bg-paper-surface border-orange border-brutal"}`}>
+          <p className="text-label text-paper-muted mb-1">FEMALE REQUIREMENT</p>
+          <p className={`font-display text-heading-lg ${femaleCount > 0 ? "text-green" : "text-orange"}`}>
             {femaleCount} / 6
           </p>
+          <p className={`text-caption mt-1 ${femaleCount > 0 ? "text-green" : "text-orange"}`}>
+            {femaleCount > 0 ? "REQUIREMENT MET" : "REQUIREMENT NOT MET"}
+          </p>
         </div>
-        <div className="border-brutal border-[2px] p-3 text-center">
-          <p className="text-caption uppercase tracking-wider">Team Name</p>
-          <p
-            className="text-heading-md font-bold"
-            style={{ color: teamNameTaken ? "#B91C1C" : "#15803D" }}
-          >
-            {teamNameTaken ? "✗ TAKEN" : teamName.trim() ? "✓ FREE" : "—"}
+        <div className={`p-4 text-center ${teamNameTaken ? "bg-paper-surface border-orange border-brutal" : "bg-paper-surface border-paper-border border-brutal"}`}>
+          <p className="text-label text-paper-muted mb-1">TEAM NAME</p>
+          <p className={`font-display text-heading-lg ${teamNameTaken ? "text-orange" : "text-green"}`}>
+            {teamNameTaken ? "TAKEN" : teamName.trim() ? "FREE" : "—"}
           </p>
         </div>
       </div>
 
-      <label className="brutal-checkbox mt-6 p-4 border-brutal border-[2px] block">
-        <input
-          type="checkbox"
-          checked={confirmed}
-          onChange={(e) => onConfirmChange(e.target.checked)}
-          aria-required="true"
-        />
-        <span className="brutal-checkbox-box" aria-hidden="true">
-          {confirmed && <span style={{ color: "white", fontSize: "1.25rem", lineHeight: 1 }}>✓</span>}
-        </span>
-        <span className="text-body font-bold flex-1">
-          By registering, I confirm that the information provided for all 6 students is correct.
-        </span>
-      </label>
+      {/* Members List */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-label text-paper-muted">TEAM MEMBERS</p>
+          <p className="text-caption text-paper-muted font-mono">
+            {students.filter(s => s.fullName.trim()).length} / 6 FILLED
+          </p>
+        </div>
+        <div className="space-y-2" role="list" aria-label="Team members review">
+          {students.map((s, idx) => {
+            const filled =
+              s.fullName.trim().length >= 2 &&
+              s.usn.trim().length >= 5 &&
+              s.phone.trim().length === 10 &&
+              s.email.includes("@")
+            return (
+              <div
+                key={idx}
+                className={`brutal-panel p-3 ${filled ? "" : "bg-paper-surface/50"}`}
+                role="listitem"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center font-display text-heading-sm text-paper-text bg-paper-surface border-paper-border border-brutal">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className={`font-bold text-body ${filled ? "text-paper-text" : "text-paper-muted"}`}>
+                          {s.fullName.trim() || <span className="text-paper-muted">— not entered —</span>}
+                        </p>
+                        {s.isTeamLeader && (
+                          <span className="brutal-badge-yellow">LEADER</span>
+                        )}
+                        {s.gender === "FEMALE" && (
+                          <span className="brutal-badge-orange">F</span>
+                        )}
+                        {s.gender === "MALE" && (
+                          <span className="brutal-badge-black">M</span>
+                        )}
+                        <span className={`${filled ? "brutal-badge-green" : "brutal-badge-outline"}`}>
+                          {filled ? "COMPLETE" : "PENDING"}
+                        </span>
+                      </div>
+                      <p className="text-mono-sm text-paper-muted truncate mt-1">
+                        {s.usn || "—"} · {s.department} · SEM {s.semester || "—"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Confirmation Checkbox */}
+      <div className="brutal-panel">
+        <label className="brutal-checkbox w-full block cursor-pointer" htmlFor="confirm-checkbox">
+          <input
+            id="confirm-checkbox"
+            type="checkbox"
+            checked={confirmed}
+            onChange={(e) => onConfirmChange(e.target.checked)}
+            aria-required="true"
+          />
+          <span className="brutal-checkbox-box" aria-hidden="true" />
+          <span className="text-body font-bold text-paper-text leading-relaxed">
+            By registering, I confirm that the information provided for all 6 students is correct and complete.
+          </span>
+        </label>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 mt-4">
+        <button
+          type="button"
+          className="brutal-btn-tertiary brutal-btn-full sm:w-auto"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          ← EDIT
+        </button>
+      </div>
     </div>
   )
 }

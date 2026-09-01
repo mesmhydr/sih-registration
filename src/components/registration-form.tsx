@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { StudentForm } from "./student-form"
 import { ReviewConfirm } from "./review-confirm"
 import { useTeamNameCheck } from "@/hooks/use-team-name-check"
-import { useFormPersistence } from "@/hooks/use-form-persistence"
 import { validateRegistration } from "@/lib/client-validations"
 import type { Student, Gender, Department } from "@/types"
 
@@ -29,6 +28,15 @@ const createEmptyStudent = (index: number): Student => ({
 
 const initialStudents: Student[] = Array.from({ length: 6 }, (_, i) => createEmptyStudent(i))
 
+const STUDENT_ACCENT_COLORS = [
+  "orange",
+  "yellow",
+  "cyan",
+  "orange",
+  "yellow",
+  "cyan",
+] as const
+
 export function RegistrationForm() {
   const router = useRouter()
   const [formState, setFormState] = useState<FormState>({
@@ -49,35 +57,8 @@ export function RegistrationForm() {
   const [progress, setProgress] = useState(0)
   const [confirmed, setConfirmed] = useState(false)
   const [showReview, setShowReview] = useState(false)
-
-  // LocalStorage persistence
-  const { hydrated, restored, clearDraft } = useFormPersistence(
-    { formState, openSections, showReview, confirmed },
-    () => ({ formState, openSections, showReview, confirmed })
-  )
-
-  // Hydrate from localStorage event
-  useEffect(() => {
-    const handleHydrate = (e: CustomEvent<{
-      version: number
-      savedAt: number
-      formState: FormState
-      openSections: Record<number, boolean>
-      showReview: boolean
-      confirmed: boolean
-    }>) => {
-      const { formState: savedForm, openSections: savedSections, showReview: savedReview, confirmed: savedConfirmed } = e.detail
-      setFormState(savedForm)
-      setOpenSections(savedSections)
-      setShowReview(savedReview)
-      setConfirmed(savedConfirmed)
-    }
-    window.addEventListener("sih:hydrate-form", handleHydrate as EventListener)
-    return () => window.removeEventListener("sih:hydrate-form", handleHydrate as EventListener)
-  }, [])
   const [errorAnchor, setErrorAnchor] = useState<string>("")
 
-  // Refs to read fresh state inside event handlers (avoids stale closure issues)
   const confirmedRef = useRef(false)
   const formStateRef = useRef(formState)
   const teamNameTakenRef = useRef(false)
@@ -136,7 +117,6 @@ export function RegistrationForm() {
     setOpenSections((prev) => ({ ...prev, [index]: !prev[index] }))
   }, [])
 
-  // Single source of truth for the full submit pipeline
   const runValidation = useCallback(() => {
     const currentForm = formStateRef.current
     const currentConfirmed = confirmedRef.current
@@ -149,13 +129,11 @@ export function RegistrationForm() {
     }
     setFormErrors(errors)
 
-    // 1) Validation errors
     if (!validation.valid) {
       const errorMsg = errors.form ||
         `Please fix the highlighted field${Object.keys(errors).filter(k => k !== "form").length > 1 ? "s" : ""} above.`
       setBottomError(errorMsg)
 
-      // Auto-expand sections that have errors
       const erroredSections = new Set<number>()
       Object.keys(errors).forEach((key) => {
         const match = key.match(/^students\.(\d+)\./)
@@ -171,9 +149,8 @@ export function RegistrationForm() {
         })
       }
 
-      // Find first error element and scroll
       setTimeout(() => {
-        const firstError = document.querySelector('[data-has-error="true"]') as HTMLElement | null
+        const firstError = document.querySelector('[data-field-error="true"]') as HTMLElement | null
         if (firstError) {
           firstError.scrollIntoView({ behavior: "smooth", block: "center" })
           const focusable = firstError.querySelector("input, select, textarea, button") as HTMLElement | null
@@ -185,9 +162,8 @@ export function RegistrationForm() {
       return false
     }
 
-    // 2) Team name taken
     if (currentTeamNameTaken) {
-      setBottomError("Your team name is already registered by another team — please change it.")
+      setBottomError("This team name is already registered. Please choose another.")
       setTimeout(() => {
         const el = document.getElementById("teamName")
         if (el) {
@@ -198,9 +174,8 @@ export function RegistrationForm() {
       return false
     }
 
-    // 3) Confirmation checkbox
     if (!currentConfirmed) {
-      setBottomError("Please tick the confirmation checkbox to proceed.")
+      setBottomError("Please confirm the declaration to proceed.")
       setErrorAnchor("confirm")
       setTimeout(() => {
         const el = document.getElementById("confirm-checkbox")
@@ -252,7 +227,6 @@ export function RegistrationForm() {
           setBottomError(data.error)
         }
         setSubmitting(false)
-        // Scroll to the bottom error
         setTimeout(() => {
           window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
         }, 50)
@@ -274,8 +248,6 @@ export function RegistrationForm() {
             })),
           })
         )
-        // Clear the draft on successful submission
-        clearDraft()
       } catch (e) {
         console.error("Failed to cache", e)
       }
@@ -303,115 +275,120 @@ export function RegistrationForm() {
       }}
       noValidate
     >
-      <div className="brutal-card p-4 sm:p-6 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-label uppercase tracking-wider">Form Progress</span>
-          <span className="text-heading-md font-bold">{progress}%</span>
-        </div>
-        <div className="w-full h-4 border-brutal border-[3px] bg-white overflow-hidden">
-          <div
-            className="h-full bg-brutal-text transition-all duration-300"
-            style={{ width: `${progress}%` }}
-            role="progressbar"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
-        </div>
-      </div>
+      {/* Team Details Section */}
+      <section aria-labelledby="team-details" className="mb-8">
+        <header className="mb-5">
+          <h2 id="team-details" className="font-display text-display-md text-paper-text mb-2">
+            TEAM DETAILS
+          </h2>
+          <div className="brutal-accent-line-orange" aria-hidden="true" />
+        </header>
 
-      <section className="brutal-section" aria-labelledby="team-details">
-        <h2 id="team-details" className="brutal-section-title">
-          TEAM DETAILS
-        </h2>
+        <div className="brutal-panel">
+          <div className="brutal-field-group">
+            <label htmlFor="teamName" className="brutal-label-lg">
+              TEAM NAME
+              <span className="brutal-badge-required ml-2">REQUIRED</span>
+            </label>
+            <input
+              id="teamName"
+              name="teamName"
+              type="text"
+              value={formState.teamName}
+              onChange={(e) => updateTeamName(e.target.value)}
+              className={`brutal-input ${
+                formErrors.teamName || teamNameStatus === "taken"
+                  ? "brutal-input-error"
+                  : teamNameStatus === "available"
+                  ? "brutal-input-success"
+                  : ""
+              }`}
+              placeholder="Enter team name"
+              maxLength={100}
+              required
+              aria-required="true"
+              aria-invalid={!!formErrors.teamName || teamNameStatus === "taken"}
+              aria-describedby={
+                formErrors.teamName || teamNameStatus === "taken"
+                  ? "teamName-error"
+                  : "teamName-status"
+              }
+              data-field-error={!!formErrors.teamName || teamNameStatus === "taken"}
+              autoComplete="off"
+            />
 
-        <div className="brutal-field-group">
-          <label htmlFor="teamName" className="brutal-label">
-            Team Name <span className="text-brutal-error" aria-hidden="true">*</span>
-            <span className="sr-only">required</span>
-          </label>
-          <input
-            id="teamName"
-            name="teamName"
-            type="text"
-            value={formState.teamName}
-            onChange={(e) => updateTeamName(e.target.value)}
-            className={`brutal-input ${
-              formErrors.teamName || teamNameStatus === "taken"
-                ? "brutal-input-error"
-                : teamNameStatus === "available"
-                ? "border-brutal-success"
-                : ""
-            }`}
-            placeholder="e.g., Code Wizards"
-            maxLength={100}
-            required
-            aria-required="true"
-            aria-invalid={!!formErrors.teamName || teamNameStatus === "taken"}
-            aria-describedby={
-              formErrors.teamName || teamNameStatus === "taken"
-                ? "teamName-error"
-                : "teamName-status"
-            }
-            data-has-error={!!formErrors.teamName || teamNameStatus === "taken"}
-            autoComplete="off"
-          />
-
-          <div id="teamName-status" aria-live="polite">
-            {teamNameStatus === "checking" && (
-              <p className="brutal-team-status-checking mt-2">
-                <span
-                  className="inline-block w-4 h-4 border-[2px] border-brutal-text border-t-transparent rounded-full animate-spin"
-                  aria-hidden="true"
-                />
-                <span>Checking availability…</span>
-              </p>
-            )}
-            {teamNameStatus === "available" && (
-              <p className="brutal-team-status-available mt-2">
-                <span aria-hidden="true">✓</span>
-                <span>AVAILABLE — this team name is free to use</span>
-              </p>
-            )}
-            {teamNameStatus === "taken" && (
-              <p className="brutal-team-status-taken mt-2" id="teamName-error" role="alert">
-                <span aria-hidden="true">⚠</span>
-                <span>THIS TEAM NAME IS ALREADY REGISTERED — please choose another</span>
-              </p>
-            )}
-            {formErrors.teamName && teamNameStatus !== "taken" && (
-              <p id="teamName-error" className="mt-2 text-body-sm text-brutal-error font-bold">
-                ⚠ {formErrors.teamName}
-              </p>
-            )}
+            <div id="teamName-status" aria-live="polite" className="mt-2">
+              {teamNameStatus === "checking" && (
+                <p className="text-body-sm text-paper-muted flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-paper-text border-t-transparent rounded-none animate-spin" aria-hidden="true" />
+                  <span>Checking availability…</span>
+                </p>
+              )}
+              {teamNameStatus === "available" && (
+                <p className="brutal-success-text flex items-center gap-2">
+                  <span aria-hidden="true">✓</span>
+                  <span>Available — this team name is free</span>
+                </p>
+              )}
+              {teamNameStatus === "taken" && (
+                <p className="brutal-error-text flex items-center gap-2" id="teamName-error" role="alert">
+                  <span aria-hidden="true">!</span>
+                  <span>This team name is already registered</span>
+                </p>
+              )}
+              {formErrors.teamName && teamNameStatus !== "taken" && (
+                <p className="brutal-error-text" id="teamName-error">
+                  ! {formErrors.teamName}
+                </p>
+              )}
+              <p className="brutal-field-hint">Must be unique. Case-insensitive check.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section aria-labelledby="students-section">
-        <h2 id="students-section" className="text-display-md mb-2">
-          STUDENT DETAILS
-        </h2>
-        <p className="text-body text-brutal-text/70 mb-6">
-          Register all 6 team members. Every team must include at least one female student. Click on a student card to expand/collapse.
+      {/* Student Details Section */}
+      <section aria-labelledby="students-section" className="mb-8">
+        <header className="mb-5">
+          <h2 id="students-section" className="font-display text-display-md text-paper-text mb-2">
+            STUDENT DETAILS
+          </h2>
+          <div className="brutal-accent-line-orange" aria-hidden="true" />
+        </header>
+
+        <p className="text-body text-paper-muted mb-6 max-w-2xl">
+          Register all 6 team members. Every team must include at least one female student.
+          Click a card to expand and fill details.
         </p>
 
-        {formState.students.map((student, index) => (
-          <StudentForm
-            key={index}
-            student={student}
-            index={index}
-            onChange={updateStudent}
-            errors={formErrors}
-            totalStudents={6}
-            isOpen={!!openSections[index]}
-            onToggle={toggleSection}
-          />
-        ))}
+        <div className="space-y-3" role="list" aria-label="Team members">
+          {formState.students.map((student, index) => (
+            <StudentForm
+              key={index}
+              student={student}
+              index={index}
+              onChange={updateStudent}
+              errors={formErrors}
+              totalStudents={6}
+              isOpen={!!openSections[index]}
+              onToggle={toggleSection}
+              accentColor={STUDENT_ACCENT_COLORS[index]}
+              isLeader={index === 0}
+            />
+          ))}
+        </div>
       </section>
 
+      {/* Review Section */}
       {showReview && (
-        <div className="mt-8" id="confirm-checkbox">
+        <section aria-labelledby="review-section" className="mb-8" id="confirm-checkbox">
+          <header className="mb-5">
+            <h2 id="review-section" className="font-display text-display-md text-paper-text mb-2">
+              REVIEW & CONFIRM
+            </h2>
+            <div className="brutal-accent-line-orange" aria-hidden="true" />
+          </header>
+
           <ReviewConfirm
             teamName={formState.teamName}
             students={formState.students}
@@ -419,59 +396,69 @@ export function RegistrationForm() {
             onConfirmChange={setConfirmed}
             teamNameTaken={teamNameTaken}
           />
-        </div>
+        </section>
       )}
 
+      {/* Bottom Error Banner */}
       {bottomError && (
         <div
-          className="brutal-error-banner"
+          className="brutal-form-error-banner mb-8"
           role="alert"
-          data-has-error="true"
+          data-field-error="true"
           data-anchor={errorAnchor}
         >
-          <div className="brutal-error-title">
-            <span aria-hidden="true">⚠</span>
-            <span>CANNOT SUBMIT</span>
-          </div>
-          <p className="brutal-error-message">{bottomError}</p>
+          <span className="brutal-form-error-icon" aria-hidden="true">!</span>
+          <p className="text-body text-paper-text">{bottomError}</p>
         </div>
       )}
 
-      <div className="brutal-card p-6 sm:p-8 mt-8">
+      {/* Submit / Continue */}
+      <div className="brutal-panel">
         {!showReview ? (
           <button
             type="submit"
-            className="brutal-button-primary"
+            className="brutal-btn-primary brutal-btn-full brutal-btn-lg"
           >
-            REVIEW &amp; CONFIRM →
+            CONTINUE TO REVIEW
+            <span aria-hidden="true">→</span>
           </button>
         ) : (
           <>
-            <p className="text-body text-center mb-6 font-bold">
-              Please review all details above. Tick the confirmation box and click below to finalize your registration.
+            <p className="text-body text-paper-text text-center mb-5">
+              Review all details below. Confirm the declaration and submit.
             </p>
             <button
               type="button"
               onClick={handleRegisterClick}
-              className="brutal-button-primary"
+              className="brutal-btn-primary brutal-btn-full brutal-btn-lg"
               disabled={submitting}
               aria-busy={submitting}
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-3">
                   <span
-                    className="inline-block w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"
+                    className="w-5 h-5 border-2 border-white border-t-transparent rounded-none animate-spin"
                     aria-hidden="true"
                   />
-                  <span>SUBMITTING...</span>
+                  <span>SUBMITTING…</span>
                 </span>
               ) : (
-                <span>REGISTER TEAM →</span>
+                <span>SUBMIT REGISTRATION →</span>
               )}
             </button>
+            {!hasFemale && showReview && (
+              <p className="brutal-error-text text-center mt-4">
+                ! At least one female student is required
+              </p>
+            )}
+            {teamNameTaken && showReview && (
+              <p className="brutal-error-text text-center mt-4">
+                ! Team name already taken
+              </p>
+            )}
             {submitting && (
-              <p className="text-caption text-center mt-3 text-brutal-text/60">
-                Please wait while we process your registration...
+              <p className="text-caption text-paper-muted text-center mt-3">
+                Please wait while we process your registration…
               </p>
             )}
           </>

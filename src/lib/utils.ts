@@ -77,7 +77,6 @@ export const DEPARTMENTS = [
   "CSE (Data Science)",
   "ISE",
   "ECE",
-  "EEE",
   "ME",
   "Civil",
   "Other",

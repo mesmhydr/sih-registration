@@ -17,7 +17,6 @@ const studentSchema = z.object({
     "CSE (Data Science)",
     "ISE",
     "ECE",
-    "EEE",
     "ME",
     "Civil",
     "Other",

@@ -1,19 +1,26 @@
 import type { Metadata, Viewport } from "next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { Inter, Space_Mono, Anton } from "next/font/google"
 import "./globals.css"
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 })
 
-const jetbrainsMono = JetBrains_Mono({
+const spaceMono = Space_Mono({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-jetbrains-mono",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-mono",
+  weight: ["400", "700"],
+})
+
+const anton = Anton({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-anton",
+  weight: ["400"],
 })
 
 export const metadata: Metadata = {
@@ -29,7 +36,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0A0A0A",
+  themeColor: "#0A0A08",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -41,12 +48,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${spaceMono.variable} ${anton.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="min-h-screen bg-brutal-bg text-brutal-text">
+      <body className="min-h-screen bg-paper-bg text-paper-text font-body bg-paper-texture">
         {children}
       </body>
     </html>

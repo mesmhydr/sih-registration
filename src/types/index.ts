@@ -6,7 +6,6 @@ export type Department =
   | "CSE (Data Science)"
   | "ISE"
   | "ECE"
-  | "EEE"
   | "ME"
   | "Civil"
   | "Other"

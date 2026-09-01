@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { DEPARTMENTS, formatDateTime, getGenderBadgeClass, getGenderLabel } from "@/lib/utils"
+import { DEPARTMENTS, formatDateTime } from "@/lib/utils"
 
 interface StudentData {
   id: string
@@ -35,6 +35,28 @@ interface Stats {
   genderDistribution: { FEMALE: number; MALE: number }
   validTeams: number
   invalidTeams: number
+}
+
+function getGenderBadgeClass(gender: string): string {
+  switch (gender) {
+    case "FEMALE":
+      return "brutal-badge-orange"
+    case "MALE":
+      return "brutal-badge-black"
+    default:
+      return "brutal-badge-outline"
+  }
+}
+
+function getGenderLabel(gender: string): string {
+  switch (gender) {
+    case "FEMALE":
+      return "F"
+    case "MALE":
+      return "M"
+    default:
+      return "?"
+  }
 }
 
 export default function AdminDashboardPage() {
@@ -151,15 +173,24 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <main className="min-h-screen pb-12">
-      <header className="border-b-[4px] border-brutal-text sticky top-0 bg-brutal-bg z-10">
+    <main className="min-h-screen bg-paper-bg bg-paper-texture">
+      {/* Decorative Elements */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        <div className="brutal-corner brutal-corner-tl top-4 left-4" />
+        <div className="brutal-corner brutal-corner-tr top-4 right-4" />
+        <div className="brutal-corner brutal-corner-bl bottom-4 left-4" />
+        <div className="brutal-corner brutal-corner-br bottom-4 right-4" />
+      </div>
+
+      {/* Header */}
+      <header className="border-b border-paper-border border-[3px] sticky top-0 z-10 bg-paper-surface/95 backdrop-blur-sm">
         <div className="brutal-container py-4 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-caption uppercase tracking-wider">Admin Panel</p>
-            <h1 className="text-heading-lg">SIH REGISTRATIONS</h1>
+            <p className="text-label text-paper-muted">ADMIN PANEL</p>
+            <h1 className="font-display text-display-md text-paper-text">SIH REGISTRATIONS</h1>
           </div>
-          <div className="flex gap-2">
-            <Link href="/" className="brutal-button !w-auto !py-3 !px-5 !text-body-sm">
+          <div className="flex flex-wrap gap-2">
+            <Link href="/" className="brutal-btn-tertiary brutal-btn-sm">
               PUBLIC SITE
             </Link>
             <button
@@ -168,7 +199,7 @@ export default function AdminDashboardPage() {
                 router.push("/admin")
                 router.refresh()
               }}
-              className="brutal-button !w-auto !py-3 !px-5 !text-body-sm"
+              className="brutal-btn-secondary brutal-btn-sm"
             >
               LOGOUT
             </button>
@@ -177,39 +208,37 @@ export default function AdminDashboardPage() {
       </header>
 
       <div className="brutal-container py-6 sm:py-8">
+        {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="brutal-card p-4 sm:p-6">
-              <p className="text-label uppercase tracking-wider mb-2">Teams</p>
-              <p className="text-display-md font-bold">{stats.totalRegistrations}</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div className="brutal-surface p-4 sm:p-5 text-center">
+              <p className="text-label text-paper-muted mb-1">TEAMS</p>
+              <p className="font-display text-display-lg text-paper-text">{stats.totalRegistrations}</p>
             </div>
-            <div className="brutal-card p-4 sm:p-6">
-              <p className="text-label uppercase tracking-wider mb-2">Students</p>
-              <p className="text-display-md font-bold">{stats.totalStudents}</p>
+            <div className="brutal-surface p-4 sm:p-5 text-center">
+              <p className="text-label text-paper-muted mb-1">STUDENTS</p>
+              <p className="font-display text-display-lg text-paper-text">{stats.totalStudents}</p>
             </div>
-            <div className="brutal-card p-4 sm:p-6" style={{ borderColor: "#15803D", boxShadow: "4px 4px 0px #15803D" }}>
-              <p className="text-label uppercase tracking-wider mb-2">Valid Teams</p>
-              <p className="text-display-md font-bold" style={{ color: "#15803D" }}>
-                {stats.validTeams}
-              </p>
-              <p className="text-caption text-brutal-text/60 mt-1">with female member</p>
+            <div className="brutal-surface-green p-4 sm:p-5 text-center">
+              <p className="text-label text-white/80 mb-1">VALID</p>
+              <p className="font-display text-display-lg text-white">{stats.validTeams}</p>
+              <p className="text-caption text-white/70 mt-1">with female member</p>
             </div>
-            <div className="brutal-card p-4 sm:p-6" style={{ borderColor: "#B91C1C", boxShadow: "4px 4px 0px #B91C1C" }}>
-              <p className="text-label uppercase tracking-wider mb-2">Invalid Teams</p>
-              <p className="text-display-md font-bold" style={{ color: "#B91C1C" }}>
+            <div className={`brutal-surface ${stats.invalidTeams > 0 ? "border-orange border-brutal-thick shadow-brutal-orange" : ""} p-4 sm:p-5 text-center`}>
+              <p className="text-label text-paper-muted mb-1">INVALID</p>
+              <p className={`font-display text-display-lg ${stats.invalidTeams > 0 ? "text-orange" : "text-paper-muted"}`}>
                 {stats.invalidTeams}
               </p>
-              <p className="text-caption text-brutal-text/60 mt-1">missing female</p>
+              <p className="text-caption text-paper-muted mt-1">missing female</p>
             </div>
           </div>
         )}
 
-        <div className="brutal-card p-4 sm:p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-              <label htmlFor="search" className="brutal-label">
-                Search
-              </label>
+        {/* Filters */}
+        <div className="brutal-panel mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="flex-1 min-w-[200px]">
+              <label htmlFor="search" className="brutal-label-lg mb-2 block">SEARCH</label>
               <input
                 id="search"
                 type="search"
@@ -219,94 +248,88 @@ export default function AdminDashboardPage() {
                 className="brutal-input"
               />
             </div>
-            <div>
-              <label htmlFor="department" className="brutal-label">
-                Department
-              </label>
+            <div className="min-w-[180px]">
+              <label htmlFor="department" className="brutal-label-lg mb-2 block">DEPARTMENT</label>
               <select
                 id="department"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
                 className="brutal-select"
               >
-                <option value="all">All Departments</option>
+                <option value="all">ALL DEPARTMENTS</option>
                 {DEPARTMENTS.map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
+                  <option key={d} value={d}>{d}</option>
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor="genderStatus" className="brutal-label">
-                Gender Status
-              </label>
+            <div className="min-w-[180px]">
+              <label htmlFor="genderStatus" className="brutal-label-lg mb-2 block">GENDER STATUS</label>
               <select
                 id="genderStatus"
                 value={genderStatus}
                 onChange={(e) => setGenderStatus(e.target.value)}
                 className="brutal-select"
               >
-                <option value="all">All Teams</option>
-                <option value="valid">Valid (with female)</option>
-                <option value="invalid">Invalid (no female)</option>
+                <option value="all">ALL TEAMS</option>
+                <option value="valid">VALID (WITH FEMALE)</option>
+                <option value="invalid">INVALID (NO FEMALE)</option>
               </select>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => handleExport("csv")} className="brutal-button !w-auto !py-3 !px-5 !text-body-sm" style={{ background: "#15803D", color: "white", borderColor: "#15803D" }}>
+            <button onClick={() => handleExport("csv")} className="brutal-btn-green brutal-btn-sm">
               EXPORT CSV
             </button>
-            <button onClick={() => handleExport("xlsx")} className="brutal-button !w-auto !py-3 !px-5 !text-body-sm" style={{ background: "#6B21A8", color: "white", borderColor: "#6B21A8" }}>
+            <button onClick={() => handleExport("xlsx")} className="brutal-btn-cyan brutal-btn-sm">
               EXPORT EXCEL
             </button>
-            <button
-              onClick={fetchData}
-              className="brutal-button !w-auto !py-3 !px-5 !text-body-sm ml-auto"
-            >
-              ↻ REFRESH
+            <button onClick={fetchData} className="brutal-btn-tertiary brutal-btn-sm ml-auto">
+              REFRESH
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="brutal-error-banner mb-6" role="alert">
-            <p className="brutal-error-message">{error}</p>
+          <div className="brutal-form-error-banner mb-6" role="alert">
+            <span className="brutal-form-error-icon" aria-hidden="true">!</span>
+            <p className="text-body text-paper-text">{error}</p>
           </div>
         )}
 
+        {/* Table */}
         {loading ? (
-          <div className="brutal-card p-12 text-center">
-            <div
-              className="inline-block w-12 h-12 border-[4px] border-brutal-text border-t-transparent animate-spin mb-4"
-              aria-hidden="true"
-            />
-            <p className="text-heading-md">Loading registrations...</p>
+          <div className="brutal-surface p-12 text-center">
+            <div className="w-12 h-12 mx-auto mb-4 border-3 border-paper-text border-t-transparent rounded-none animate-spin" aria-hidden="true" />
+            <p className="font-display text-heading-lg text-paper-text">Loading registrations…</p>
           </div>
         ) : registrations.length === 0 ? (
-          <div className="brutal-card p-12 text-center">
-            <p className="text-display-md mb-2">NO REGISTRATIONS</p>
-            <p className="text-body text-brutal-text/60">
-              No teams match your filters. Try adjusting search criteria.
-            </p>
+          <div className="brutal-surface p-12 text-center">
+            <p className="font-display text-display-md text-paper-text mb-2">NO REGISTRATIONS</p>
+            <p className="text-body text-paper-muted">No teams match your filters. Try adjusting search criteria.</p>
           </div>
         ) : (
           <>
-            <p className="text-label uppercase tracking-wider mb-3">
-              Showing {registrations.length} team{registrations.length !== 1 ? "s" : ""}
-            </p>
-            <div className="brutal-card overflow-x-auto">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <p className="text-label text-paper-muted">
+                Showing {registrations.length} team{registrations.length !== 1 ? "s" : ""}
+              </p>
+              <p className="text-caption text-paper-muted font-mono">
+                Click VIEW for details · COPY for registration ID
+              </p>
+            </div>
+
+            <div className="brutal-surface overflow-x-auto">
               <table className="brutal-table">
                 <thead>
                   <tr>
-                    <th>Reg ID</th>
-                    <th>Team Name</th>
-                    <th>Members</th>
-                    <th>Departments</th>
-                    <th>Status</th>
-                    <th>Registered</th>
-                    <th>Actions</th>
+                    <th className="w-40">REG ID</th>
+                    <th>TEAM NAME</th>
+                    <th className="w-20 text-center">MEMBERS</th>
+                    <th>DEPARTMENTS</th>
+                    <th className="w-36 text-center">STATUS</th>
+                    <th className="w-44">REGISTERED</th>
+                    <th className="w-40 text-center">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -315,36 +338,40 @@ export default function AdminDashboardPage() {
                     return (
                       <tr key={reg.registrationId}>
                         <td>
-                          <code className="font-mono text-body-sm font-bold" style={{ color: "#6B21A8" }}>
+                          <code className="font-mono font-display text-body text-orange break-all">
                             {reg.registrationId}
                           </code>
                         </td>
                         <td>
-                          <span className="font-bold">{reg.teamName}</span>
+                          <span className="font-bold text-body text-paper-text">{reg.teamName}</span>
                         </td>
-                        <td>{reg.students.length}</td>
-                        <td>
-                          <span className="text-body-sm">{Array.from(departments).join(", ")}</span>
+                        <td className="text-center">
+                          <span className="font-display text-heading-md text-paper-text">{reg.students.length}</span>
                         </td>
                         <td>
+                          <span className="text-body text-paper-muted">{Array.from(departments).join(", ")}</span>
+                        </td>
+                        <td className="text-center">
                           {reg.hasFemale ? (
-                            <span className="brutal-badge-female">✓ VALID</span>
+                            <span className="brutal-badge-green">VALID</span>
                           ) : (
-                            <span className="brutal-badge bg-brutal-error text-white border-brutal-error">✗ INVALID</span>
+                            <span className="brutal-badge-orange">INVALID</span>
                           )}
                         </td>
-                        <td className="text-body-sm">{formatDateTime(reg.createdAt)}</td>
                         <td>
-                          <div className="flex flex-wrap gap-1">
+                          <span className="text-mono-sm text-paper-muted">{formatDateTime(reg.createdAt)}</span>
+                        </td>
+                        <td className="text-center">
+                          <div className="flex items-center justify-center gap-1">
                             <button
                               onClick={() => setSelectedReg(reg)}
-                              className="brutal-button !w-auto !py-2 !px-3 !text-caption !border-[2px] !shadow-brutal-sm"
+                              className="brutal-btn-tertiary brutal-btn-sm"
                             >
                               VIEW
                             </button>
                             <button
                               onClick={() => handleCopy(reg.registrationId)}
-                              className="brutal-button !w-auto !py-2 !px-3 !text-caption !border-[2px] !shadow-brutal-sm"
+                              className={`brutal-btn-tertiary brutal-btn-sm ${copiedId === reg.registrationId ? "text-green" : ""}`}
                             >
                               {copiedId === reg.registrationId ? "✓" : "COPY"}
                             </button>
@@ -358,97 +385,111 @@ export default function AdminDashboardPage() {
             </div>
           </>
         )}
-      </div>
 
-      {selectedReg && (
-        <div
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-black/60 overflow-y-auto"
-          onClick={() => setSelectedReg(null)}
-        >
+        {/* Detail Modal */}
+        {selectedReg && (
           <div
-            className="brutal-card p-6 sm:p-8 w-full max-w-3xl my-8"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-black/60 overflow-y-auto"
+            onClick={() => setSelectedReg(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
           >
-            <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
-              <div>
-                <p className="text-label uppercase tracking-wider">Registration</p>
-                <h2 className="text-heading-lg">{selectedReg.teamName}</h2>
-                <code className="font-mono text-body font-bold" style={{ color: "#6B21A8" }}>
-                  {selectedReg.registrationId}
-                </code>
-              </div>
-              <button
-                onClick={() => setSelectedReg(null)}
-                className="brutal-button !w-auto !py-2 !px-4 !text-body-sm !border-[3px]"
-                aria-label="Close"
-              >
-                ✕ CLOSE
-              </button>
-            </div>
+            <div
+              className="brutal-surface w-full max-w-3xl my-8 sm:my-16 max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5 p-5 border-b border-paper-border border-[2px] sticky top-0 bg-paper-surface z-10">
+                <div>
+                  <p className="text-label text-paper-muted">REGISTRATION</p>
+                  <h2 id="modal-title" className="font-display text-display-md text-paper-text">{selectedReg.teamName}</h2>
+                  <code className="font-mono font-display text-heading-md text-orange break-all">{selectedReg.registrationId}</code>
+                </div>
+                <button
+                  onClick={() => setSelectedReg(null)}
+                  className="brutal-btn-tertiary brutal-btn-sm self-start sm:self-center"
+                  aria-label="Close"
+                >
+                  CLOSE
+                </button>
+              </header>
 
-            <div className="mb-6">
-              <p className="text-body">
-                <strong>Registered:</strong> {formatDateTime(selectedReg.createdAt)}
-              </p>
-              <p className="text-body">
-                <strong>Status:</strong>{" "}
-                {selectedReg.hasFemale ? (
-                  <span style={{ color: "#15803D" }} className="font-bold">VALID (has female member)</span>
-                ) : (
-                  <span style={{ color: "#B91C1C" }} className="font-bold">INVALID (no female member)</span>
-                )}
-              </p>
-            </div>
-
-            <h3 className="brutal-section-title">TEAM MEMBERS</h3>
-            <div className="space-y-3 mb-6">
-              {selectedReg.students.map((s, idx) => (
-                <div key={s.id} className="border-brutal border-[3px] p-4 bg-white">
-                  <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-heading-md font-bold">
-                        {String(idx + 1).padStart(2, "0")} {s.isTeamLeader && "★"}
-                      </span>
-                      <span className="text-heading-sm font-bold">{s.fullName}</span>
-                    </div>
-                    <div className="flex gap-2 flex-wrap">
-                      {s.isTeamLeader && (
-                        <span className="brutal-badge" style={{ background: "#6B21A8", color: "white", borderColor: "#6B21A8" }}>
-                          LEADER
-                        </span>
-                      )}
-                      <span className={getGenderBadgeClass(s.gender)}>{getGenderLabel(s.gender)}</span>
-                    </div>
+              <div className="p-5 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-b border-paper-border border-[2px] pb-3">
+                  <div>
+                    <p className="text-label text-paper-muted">REGISTERED</p>
+                    <p className="font-mono text-body text-paper-text">{formatDateTime(selectedReg.createdAt)}</p>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-body-sm">
-                    <p><strong>USN:</strong> <code className="font-mono">{s.usn}</code></p>
-                    <p><strong>Phone:</strong> <code className="font-mono">{s.phone}</code></p>
-                    <p><strong>Email:</strong> <code className="font-mono break-all">{s.email}</code></p>
-                    <p><strong>Sem:</strong> {s.semester} · <strong>Year:</strong> {s.year}</p>
-                    <p><strong>Dept:</strong> {s.department}</p>
+                  <div>
+                    <p className="text-label text-paper-muted">STATUS</p>
+                    <p className={`font-display text-heading-md ${selectedReg.hasFemale ? "text-green" : "text-orange"}`}>
+                      {selectedReg.hasFemale ? "VALID" : "INVALID"}
+                    </p>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => handleCopy(selectedReg.registrationId)}
-                className="brutal-button-secondary !w-auto !py-3 !px-5 !text-body-sm"
-              >
-                {copiedId === selectedReg.registrationId ? "✓ COPIED" : "COPY REG ID"}
-              </button>
-              <button
-                onClick={() => handleDelete(selectedReg.registrationId)}
-                className="brutal-button !w-auto !py-3 !px-5 !text-body-sm ml-auto"
-                style={{ background: "#B91C1C", color: "white", borderColor: "#B91C1C" }}
-              >
-                DELETE
-              </button>
+                <h3 className="font-display text-heading-lg text-paper-text mb-3">
+                  TEAM MEMBERS
+                  <span className="text-label text-paper-muted ml-2">{selectedReg.students.length}/6</span>
+                </h3>
+
+                <div className="space-y-2">
+                  {selectedReg.students.map((s, idx) => (
+                    <div key={s.id} className="brutal-panel p-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center font-display text-heading-sm text-paper-text bg-paper-surface border-paper-border border-brutal">
+                            {String(idx + 1).padStart(2, "0")}
+                          </span>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-body text-paper-text truncate">{s.fullName}</span>
+                              {s.isTeamLeader && <span className="brutal-badge-yellow">LEADER</span>}
+                              {s.gender === "FEMALE" && <span className="brutal-badge-orange">F</span>}
+                              {s.gender === "MALE" && <span className="brutal-badge-black">M</span>}
+                            </div>
+                            <p className="text-mono-sm text-paper-muted truncate mt-1">
+                              {s.usn} · {s.department} · SEM {s.semester}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <code className="font-mono text-mono-sm text-paper-text bg-paper-surface border-paper-border border-brutal px-2 py-1">{s.phone}</code>
+                          <code className="font-mono text-mono-sm text-paper-text bg-paper-surface border-paper-border border-brutal px-2 py-1 break-all max-w-xs">{s.email}</code>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-2 pt-3 border-t border-paper-border border-[2px]">
+                  <button
+                    onClick={() => handleCopy(selectedReg.registrationId)}
+                    className="brutal-btn-secondary"
+                  >
+                    {copiedId === selectedReg.registrationId ? "✓ COPIED" : "COPY REG ID"}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(selectedReg.registrationId)}
+                    className="brutal-btn-danger ml-auto"
+                  >
+                    DELETE
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t border-paper-border border-[2px] bg-paper-surface/50 mt-auto">
+        <div className="brutal-container py-4">
+          <p className="text-caption text-paper-muted text-center">
+            Smart India Internal Hackathon 2026 · Admin Panel
+          </p>
         </div>
-      )}
+      </footer>
     </main>
   )
 }

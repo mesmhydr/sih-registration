@@ -3,109 +3,138 @@ import { HERO_COLORS } from "@/lib/utils"
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen pb-20">
-      <header className="border-b-[4px] border-brutal-text relative overflow-hidden">
-        {/* Decorative color stripe */}
-        <div className="color-stripe">
-          <div className="cs-black"></div>
-          <div className="cs-green"></div>
-          <div className="cs-blue"></div>
-          <div className="cs-yellow"></div>
-          <div className="cs-orange"></div>
-          <div className="cs-red"></div>
-          <div className="cs-purple"></div>
-        </div>
-
-        <div className="brutal-container py-8 sm:py-12">
-          <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <div className="brutal-badge" style={{ background: "#6B21A8", color: "white", borderColor: "#6B21A8" }}>
-              SIH 2026
-            </div>
-            <div className="brutal-badge" style={{ background: "#EA580C", color: "white", borderColor: "#EA580C" }}>
-              INTERNAL
-            </div>
-            <div className="brutal-badge" style={{ background: "#15803D", color: "white", borderColor: "#15803D" }}>
-              FREE
-            </div>
+    <main className="min-h-screen">
+      {/* Compact Registration Header */}
+      <header className="border-b border-paper-border border-[2px]">
+        <div className="brutal-container py-5 sm:py-7">
+          {/* Status Tags */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <span className="brutal-badge-orange">SIH 2026</span>
+            <span className="brutal-badge-black">INTERNAL</span>
+            <span className="brutal-badge-green">FREE</span>
           </div>
 
-          <h1 className="text-display-xl mb-2">
-            <span style={{ color: HERO_COLORS.orange }}>SMART INDIA</span>
-            <br />
-            <span style={{ color: HERO_COLORS.green }}>HACKATHON</span>
+          {/* Main Title */}
+          <h1 className="font-display text-display-xl text-paper-text mb-2">
+            REGISTER YOUR TEAM
           </h1>
 
-          <p className="text-heading-md text-brutal-text/80 mb-6">
-            VEMANA INSTITUTE OF TECHNOLOGY
+          {/* Description */}
+          <p className="text-body text-paper-muted mb-5 max-w-xl">
+            Register all 6 team members. Every team must include at least one female student.
           </p>
 
-          <div className="brutal-card p-4 sm:p-6 inline-block" style={{ borderColor: HERO_COLORS.blue, boxShadow: "6px 6px 0px #1D4ED8" }}>
-            <p className="text-label uppercase tracking-wider mb-1" style={{ color: HERO_COLORS.blue }}>Hackathon Date</p>
-            <p className="text-heading-md font-bold">03 SEPTEMBER 2026</p>
+          {/* Deadline */}
+          <div className="flex items-center gap-3 w-fit p-3 bg-paper-surface border-paper-border border-[2px]">
+            <span className="brutal-diamond-orange flex-shrink-0" aria-hidden="true" />
+            <div>
+              <p className="text-label text-paper-muted">LAST DATE TO APPLY</p>
+              <p className="font-display text-heading-lg text-paper-text">03 SEPTEMBER 2026</p>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="brutal-container py-6">
-        <div
-          className="brutal-card p-4 sm:p-6 flex flex-wrap items-center justify-between gap-4"
-          style={{ borderColor: "#15803D", boxShadow: "6px 6px 0px #15803D" }}
-        >
-          <div className="flex items-center gap-4">
-            <span
-              className="inline-block w-4 h-4 animate-pulse"
-              style={{ background: "#15803D" }}
-              aria-hidden="true"
-            />
-            <div>
-              <p className="text-heading-md font-bold" style={{ color: "#15803D" }}>
-                REGISTRATION OPEN
-              </p>
-              <p className="text-body text-brutal-text/80">
-                LAST DATE TO APPLY: 02 SEPTEMBER 2026
-              </p>
+      {/* Registration Status Panel */}
+      <section className="border-b border-paper-border border-[2px]">
+        <div className="brutal-container py-5 sm:py-6">
+          <div className="brutal-panel-status w-full sm:max-w-2xl">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="w-2.5 h-2.5 bg-orange rounded-none animate-pulse" aria-hidden="true" />
+                <div>
+                  <p className="font-display text-heading-md text-orange">REGISTRATION OPEN</p>
+                  <p className="text-caption text-paper-muted">Vemana Institute of Technology</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 border-l border-paper-border border-[2px] pl-4 sm:pl-6">
+                <div className="text-center">
+                  <p className="text-label text-paper-muted">DEADLINE</p>
+                  <p className="font-display text-heading-md text-paper-text">03 SEP 2026</p>
+                </div>
+                <div className="w-px h-10 bg-paper-border hidden sm:block" />
+                <div className="text-center">
+                  <p className="text-label text-paper-muted">TEAM SIZE</p>
+                  <p className="font-display text-heading-md text-paper-text">6 MEMBERS</p>
+                </div>
+                <div className="w-px h-10 bg-paper-border hidden sm:block" />
+                <div className="text-center">
+                  <p className="text-label text-paper-muted">REQUIRED</p>
+                  <p className="font-display text-heading-md text-orange">≥1 FEMALE</p>
+                </div>
+                <div className="w-px h-10 bg-paper-border hidden sm:block" />
+                <div className="text-center">
+                  <p className="text-label text-paper-muted">FEE</p>
+                  <p className="font-display text-heading-md text-green">FREE</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="brutal-container py-8 sm:py-12">
-        <section className="mb-8">
-          <h2 className="text-display-lg mb-3">REGISTER YOUR TEAM</h2>
-          <p className="text-body-lg text-brutal-text/80 max-w-3xl">
-            Register all 6 team members. Every team must include at least one female student. All fields are required.
-          </p>
-        </section>
-
-        <RegistrationForm />
-      </div>
-
-      <footer className="border-t-[4px] border-brutal-text mt-12">
-        <div className="brutal-container py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div>
-              <p className="text-label uppercase tracking-wider mb-2">Team Size</p>
-              <p className="text-heading-md font-bold">EXACTLY 6</p>
+      {/* Progress Indicator */}
+      <section className="border-b border-paper-border border-[2px]">
+        <div className="brutal-container py-4 sm:py-5">
+          <div className="brutal-panel-compact">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+              <p className="text-label text-paper-text">REGISTRATION PROGRESS</p>
+              <p className="font-display text-heading-md text-paper-text" id="progress-percent">0%</p>
             </div>
-            <div>
-              <p className="text-label uppercase tracking-wider mb-2">Required</p>
-              <p className="text-heading-md font-bold" style={{ color: "#6B21A8" }}>
-                ≥ 1 FEMALE STUDENT
-              </p>
+            <div className="brutal-progress-track" role="progressbar" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100} aria-label="Form completion progress">
+              <div className="brutal-progress-fill-orange" id="progress-bar" style={{ width: "0%" }} />
             </div>
-            <div>
-              <p className="text-label uppercase tracking-wider mb-2">Registration</p>
-              <p className="text-heading-md font-bold" style={{ color: "#15803D" }}>
-                FREE
-              </p>
+            <div className="flex flex-wrap gap-2 mt-3" id="progress-steps">
+              <span className="brutal-badge-black">01 TEAM</span>
+              <span className="brutal-badge-outline">02 MEMBERS</span>
+              <span className="brutal-badge-outline">03 REVIEW</span>
             </div>
           </div>
-          <div className="brutal-divider"></div>
-          <p className="text-caption text-brutal-text/60 text-center">
+        </div>
+      </section>
+
+      {/* Form Section */}
+      <section className="py-6 sm:py-8">
+        <div className="brutal-container">
+          <RegistrationForm />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-paper-border border-[2px] bg-paper-surface/50">
+        <div className="brutal-container py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
+            <div className="p-3">
+              <p className="text-label text-paper-muted">TEAM SIZE</p>
+              <p className="font-display text-heading-md text-paper-text">EXACTLY 6</p>
+            </div>
+            <div className="p-3">
+              <p className="text-label text-paper-muted">REQUIRED</p>
+              <p className="font-display text-heading-md text-orange">≥1 FEMALE</p>
+            </div>
+            <div className="p-3">
+              <p className="text-label text-paper-muted">REGISTRATION</p>
+              <p className="font-display text-heading-md text-green">FREE</p>
+            </div>
+          </div>
+          <div className="brutal-divider my-4" />
+          <p className="text-caption text-paper-muted text-center">
             Smart India Internal Hackathon 2026 · Vemana Institute of Technology
           </p>
         </div>
       </footer>
+
+      {/* Decorative Elements */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        <div className="brutal-corner brutal-corner-tl top-4 left-4" />
+        <div className="brutal-corner brutal-corner-tr top-4 right-4" />
+        <div className="brutal-corner brutal-corner-bl bottom-4 left-4" />
+        <div className="brutal-corner brutal-corner-br bottom-4 right-4" />
+        <div className="brutal-diamond-orange fixed top-1/4 left-2 rotate-12" style={{ opacity: 0.15 }} />
+        <div className="brutal-diamond-cyan fixed top-1/3 right-2 -rotate-12" style={{ opacity: 0.1 }} />
+        <div className="brutal-diamond-yellow fixed bottom-1/3 left-3 rotate-6" style={{ opacity: 0.1 }} />
+        <div className="brutal-diamond fixed bottom-1/4 right-3 -rotate-6" style={{ opacity: 0.05 }} />
+      </div>
     </main>
   )
 }

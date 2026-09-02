@@ -4,10 +4,29 @@ export function generateRegistrationId(): string {
   return `SIH-${timestamp}${random}`
 }
 
+const REGISTRATION_ID_PATTERN = /^SIH-(\d+)$/
+
+function extractIdNumber(registrationId: string): number {
+  const match = REGISTRATION_ID_PATTERN.exec(registrationId)
+  return match ? parseInt(match[1], 10) : 0
+}
+
+/**
+ * Generate the next sequential registration ID based on the MAX existing
+ * numeric suffix (not count, so deletions can't cause collisions).
+ * A unique-constraint race between concurrent inserts is handled by the
+ * caller retrying on P2002.
+ */
 export async function generateSequentialRegistrationId(prisma: any): Promise<string> {
-  const count = await prisma.registration.count()
-  const nextNumber = count + 1
-  return `SIH-${String(nextNumber).padStart(4, '0')}`
+  const rows = await prisma.registration.findMany({
+    select: { registrationId: true },
+  })
+  const maxNumber = rows.reduce(
+    (max: number, row: { registrationId: string }) =>
+      Math.max(max, extractIdNumber(row.registrationId)),
+    0
+  )
+  return `SIH-${String(maxNumber + 1).padStart(4, '0')}`
 }
 
 export function formatDate(date: Date | string): string {

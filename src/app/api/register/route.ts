@@ -80,37 +80,49 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const registrationId = await generateSequentialRegistrationId(prisma)
+    const createRegistration = (registrationId: string) =>
+      prisma.registration.create({
+        data: {
+          registrationId,
+          teamName,
+          students: {
+            create: students.map((student) => ({
+              fullName: student.fullName,
+              usn: student.usn.toUpperCase(),
+              phone: student.phone,
+              email: student.email.toLowerCase(),
+              semester: student.semester,
+              year: student.year,
+              department: student.department,
+              gender: student.gender,
+              isTeamLeader: student.isTeamLeader,
+              orderIndex: student.orderIndex,
+            })),
+          },
+        },
+        include: {
+          students: {
+            orderBy: { orderIndex: "asc" },
+          },
+        },
+      })
 
-    const registration = await prisma.registration.create({
-      data: {
-        registrationId,
-        teamName,
-        students: {
-          create: students.map((student) => ({
-            fullName: student.fullName,
-            usn: student.usn.toUpperCase(),
-            phone: student.phone,
-            email: student.email.toLowerCase(),
-            semester: student.semester,
-            year: student.year,
-            department: student.department,
-            gender: student.gender,
-            isTeamLeader: student.isTeamLeader,
-            orderIndex: student.orderIndex,
-          })),
-        },
-      },
-      include: {
-        students: {
-          orderBy: { orderIndex: "asc" },
-        },
-      },
-    })
+    let registration: Awaited<ReturnType<typeof createRegistration>> | undefined
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const registrationId = await generateSequentialRegistrationId(prisma)
+      try {
+        registration = await createRegistration(registrationId)
+        break
+      } catch (err: any) {
+        const isIdCollision =
+          err?.code === "P2002" && err?.meta?.target?.includes("registration_id")
+        if (!isIdCollision || attempt === 2) throw err
+      }
+    }
 
     return NextResponse.json({
       success: true,
-      registrationId: registration.registrationId,
+      registrationId: registration!.registrationId,
     })
   } catch (error) {
     console.error("Registration error:", error)
